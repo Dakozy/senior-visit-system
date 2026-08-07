@@ -128,7 +128,7 @@ Submit Visit
 
 </div>
 
-<script>
+<script src="js/app.js">
 
 const SCRIPT_URL="YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 
@@ -212,5 +212,33 @@ console.log(error);
 
 </script>
 
+<script src="js/app.js"></script>
+
+<script>
+
+if("serviceWorker" in navigator){
+
+window.addEventListener("load",()=>{
+
+navigator.serviceWorker.register("service-worker.js")
+
+.then(reg=>{
+
+console.log("Service Worker Registered",reg);
+
+})
+
+.catch(err=>{
+
+console.error(err);
+
+});
+
+});
+
+}
+
+</script>
+  
 </body>
 </html>
