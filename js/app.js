@@ -11,7 +11,7 @@ Author: Gabriel West
 // CONFIGURATION
 //====================================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrhsQri6SpekHRtdrCk73H2xwbGPpWP-I3Z5Yopl3sH9xy3tgUxIwHbm9PALka3nm8/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJt_7DPBjDjqtpuf9OpryG4yANSC7m07kQuVU6kc7CUsfURAdDXWVPdHJDE5PwlL80/exec";
 
 //====================================================
 // DOM ELEMENTS
