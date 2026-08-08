@@ -1,278 +1,754 @@
-
 /*
-===========================================
-Senior Care Visit Management System
+====================================================
+Senior Care Visit Form
 app.js
-Author: Gabriel West
-===========================================
+
+Frontend:
+GitHub Pages
+
+Backend:
+Google Apps Script Web App
+
+Database:
+Google Sheets
+====================================================
 */
 
-//====================================================
-// CONFIGURATION
-//====================================================
 
-//const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJt_7DPBjDjqtpuf9OpryG4yANSC7m07kQuVU6kc7CUsfURAdDXWVPdHJDE5PwlL80/exec";
+/*
+====================================================
+CONFIGURATION
+====================================================
+*/
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYEkV_Y4Rigd3Xhiu5mtymR-mjgPY10Y-2HqMHlt2HRTpUJzwKebc2cNAILwIq24hv/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxrhsQri6SpekHRtdrCk73H2xwbGPpWP-I3Z5Yopl3sH9xy3tgUxIwHbm9PALka3nm8/exec";
 
-//====================================================
-// DOM ELEMENTS
-//====================================================
 
-const form = document.getElementById("visitForm");
-const photo = document.getElementById("photo");
-const preview = document.getElementById("preview");
-const status = document.getElementById("status");
-const submitButton = form.querySelector("button[type='submit']");
+/*
+====================================================
+CONFIGURATION VALIDATION
+====================================================
+*/
 
-const latitude = document.getElementById("latitude");
-const longitude = document.getElementById("longitude");
-const timestamp = document.getElementById("timestamp");
+if (
+    !SCRIPT_URL ||
+    !SCRIPT_URL.includes("/exec")
+) {
 
-//====================================================
-// INITIALIZATION
-//====================================================
-
-document.addEventListener("DOMContentLoaded", init);
-
-function init() {
-
-    setTimestamp();
-
-    getCurrentLocation();
-
-    setupCameraPreview();
+    console.error(
+        "Invalid Apps Script Web App URL."
+    );
 
 }
 
-//====================================================
-// TIMESTAMP
-//====================================================
 
-function setTimestamp(){
+/*
+====================================================
+GET HTML ELEMENTS
+====================================================
+*/
 
-    timestamp.value = new Date().toISOString();
+const form =
+    document.getElementById("visitForm");
+
+const status =
+    document.getElementById("status");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+const photo =
+    document.getElementById("photo");
+
+const preview =
+    document.getElementById("preview");
+
+const timestamp =
+    document.getElementById("timestamp");
+
+const latitude =
+    document.getElementById("latitude");
+
+const longitude =
+    document.getElementById("longitude");
+
+
+/*
+====================================================
+INITIAL VALIDATION
+====================================================
+*/
+
+if (!form) {
+
+    console.error(
+        "ERROR: visitForm was not found."
+    );
 
 }
 
-//====================================================
-// GPS
-//====================================================
 
-function getCurrentLocation(){
+/*
+====================================================
+UTILITY: SHOW STATUS
+====================================================
+*/
 
-    if(!navigator.geolocation){
+function showStatus(
+    message,
+    type = "info"
+) {
 
-        console.warn("Geolocation not supported.");
+    if (!status) return;
 
-        return;
+
+    status.textContent = message;
+
+
+    if (type === "success") {
+
+        status.style.color = "green";
 
     }
 
+    else if (type === "error") {
+
+        status.style.color = "red";
+
+    }
+
+    else if (type === "warning") {
+
+        status.style.color = "orange";
+
+    }
+
+    else {
+
+        status.style.color = "blue";
+
+    }
+
+}
+
+
+/*
+====================================================
+UTILITY: RESET TIMESTAMP
+====================================================
+*/
+
+function updateTimestamp() {
+
+    if (timestamp) {
+
+        timestamp.value =
+            new Date().toISOString();
+
+    }
+
+}
+
+
+/*
+====================================================
+INITIAL TIMESTAMP
+====================================================
+*/
+
+updateTimestamp();
+
+
+/*
+====================================================
+GEOLOCATION
+====================================================
+*/
+
+if ("geolocation" in navigator) {
+
     navigator.geolocation.getCurrentPosition(
 
-        function(position){
+        function (position) {
 
-            latitude.value = position.coords.latitude;
+            latitude.value =
+                position.coords.latitude;
 
-            longitude.value = position.coords.longitude;
+            longitude.value =
+                position.coords.longitude;
+
+            console.log(
+                "Location captured successfully."
+            );
 
         },
 
-        function(error){
+        function (error) {
 
-            console.warn(error.message);
+            console.warn(
+                "Unable to obtain location:",
+                error.message
+            );
+
+            /*
+            Do not stop the entire form.
+            The visit can still be submitted.
+            */
+
+            showStatus(
+                "Location could not be obtained. You may continue.",
+                "warning"
+            );
 
         },
 
         {
-
-            enableHighAccuracy:true,
-
-            timeout:10000,
-
-            maximumAge:0
-
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
         }
 
     );
 
 }
 
-//====================================================
-// CAMERA PREVIEW
-//====================================================
+else {
 
-function setupCameraPreview(){
+    console.warn(
+        "Geolocation is not supported by this browser."
+    );
 
-    photo.addEventListener("change",function(){
+}
 
-        if(this.files.length===0){
 
-            preview.style.display="none";
+/*
+====================================================
+PHOTO PREVIEW + VALIDATION
+====================================================
+*/
 
-            return;
+if (photo) {
+
+    photo.addEventListener(
+        "change",
+        function () {
+
+            /*
+            Remove previous preview
+            */
+
+            preview.style.display = "none";
+
+            preview.removeAttribute("src");
+
+
+            /*
+            No file selected
+            */
+
+            if (!this.files || this.files.length === 0) {
+
+                return;
+
+            }
+
+
+            const file =
+                this.files[0];
+
+
+            /*
+            Validate file type
+            */
+
+            if (!file.type.startsWith("image/")) {
+
+                showStatus(
+                    "Please select a valid image file.",
+                    "error"
+                );
+
+                this.value = "";
+
+                return;
+
+            }
+
+
+            /*
+            Maximum file size:
+            5 MB
+            */
+
+            const MAX_FILE_SIZE =
+                5 * 1024 * 1024;
+
+
+            if (file.size > MAX_FILE_SIZE) {
+
+                showStatus(
+                    "Photo is too large. Maximum size is 5 MB.",
+                    "error"
+                );
+
+                this.value = "";
+
+                return;
+
+            }
+
+
+            /*
+            Create preview
+            */
+
+            const imageURL =
+                URL.createObjectURL(file);
+
+            preview.src = imageURL;
+
+            preview.style.display = "block";
+
+
+            /*
+            Release object URL after image loads
+            */
+
+            preview.onload = function () {
+
+                URL.revokeObjectURL(imageURL);
+
+            };
 
         }
-
-        preview.src = URL.createObjectURL(this.files[0]);
-
-        preview.style.display = "block";
-
-    });
+    );
 
 }
 
-//====================================================
-// FORM VALIDATION
-//====================================================
 
-function validateForm(){
+/*
+====================================================
+FORM SUBMISSION
+====================================================
+*/
 
-    if(form.beneficiary.value.trim()===""){
+if (form) {
 
-        showMessage("Beneficiary name is required.","red");
+    form.addEventListener(
+        "submit",
+        async function (event) {
 
-        return false;
+            event.preventDefault();
+
+
+            /*
+            Prevent accidental double submission
+            */
+
+            if (
+                submitButton &&
+                submitButton.disabled
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+            Browser validation
+            */
+
+            if (!form.checkValidity()) {
+
+                form.reportValidity();
+
+                return;
+
+            }
+
+
+            /*
+            Check Internet connection
+            */
+
+            if (!navigator.onLine) {
+
+                showStatus(
+                    "You appear to be offline. Please reconnect and try again.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /*
+            Validate Apps Script URL
+            */
+
+            if (
+                !SCRIPT_URL ||
+                !SCRIPT_URL.includes("/exec")
+            ) {
+
+                showStatus(
+                    "System configuration error. Please contact the administrator.",
+                    "error"
+                );
+
+                console.error(
+                    "Invalid SCRIPT_URL:",
+                    SCRIPT_URL
+                );
+
+                return;
+
+            }
+
+
+            /*
+            Disable submit button
+            */
+
+            if (submitButton) {
+
+                submitButton.disabled = true;
+
+                submitButton.textContent =
+                    "Submitting...";
+
+                submitButton.style.opacity =
+                    "0.7";
+
+            }
+
+
+            showStatus(
+                "Submitting visit record...",
+                "info"
+            );
+
+
+            /*
+            Collect form data
+            */
+
+            const formData =
+                new FormData(form);
+
+
+            /*
+            Timeout controller
+            */
+
+            const controller =
+                new AbortController();
+
+
+            const timeout =
+                setTimeout(
+                    function () {
+
+                        controller.abort();
+
+                    },
+                    30000
+                );
+
+
+            try {
+
+
+                /*
+                Send request
+                */
+
+                const response =
+                    await fetch(
+                        SCRIPT_URL,
+                        {
+                            method: "POST",
+
+                            body: formData,
+
+                            signal:
+                                controller.signal
+                        }
+                    );
+
+
+                /*
+                Clear timeout
+                */
+
+                clearTimeout(timeout);
+
+
+                /*
+                Check HTTP status
+                */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server returned HTTP " +
+                        response.status
+                    );
+
+                }
+
+
+                /*
+                Read response
+                */
+
+                const responseText =
+                    await response.text();
+
+
+                console.log(
+                    "Apps Script response:",
+                    responseText
+                );
+
+
+                /*
+                Try to parse JSON
+                */
+
+                let result;
+
+
+                try {
+
+                    result =
+                        JSON.parse(responseText);
+
+                }
+
+                catch (jsonError) {
+
+                    /*
+                    Apps Script returned something
+                    that was not valid JSON.
+                    */
+
+                    throw new Error(
+                        "Invalid response received from server."
+                    );
+
+                }
+
+
+                /*
+                Check application-level response
+                */
+
+                if (
+                    result &&
+                    result.success === true
+                ) {
+
+                    showStatus(
+                        "Visit submitted successfully.",
+                        "success"
+                    );
+
+
+                    /*
+                    Reset form
+                    */
+
+                    form.reset();
+
+
+                    /*
+                    Hide photo preview
+                    */
+
+                    if (preview) {
+
+                        preview.style.display =
+                            "none";
+
+                        preview.removeAttribute(
+                            "src"
+                        );
+
+                    }
+
+
+                    /*
+                    Generate new timestamp
+                    */
+
+                    updateTimestamp();
+
+
+                    /*
+                    Optional success log
+                    */
+
+                    console.log(
+                        "Visit submitted successfully."
+                    );
+
+                }
+
+                else {
+
+                    /*
+                    Apps Script responded,
+                    but reported an application error.
+                    */
+
+                    const serverMessage =
+                        result &&
+                        result.error
+                            ? result.error
+                            : "The server rejected the submission.";
+
+                    throw new Error(
+                        serverMessage
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+
+                /*
+                Clear timeout
+                */
+
+                clearTimeout(timeout);
+
+
+                /*
+                Handle timeout
+                */
+
+                if (
+                    error.name ===
+                    "AbortError"
+                ) {
+
+                    showStatus(
+                        "The submission timed out. Please check your connection and try again.",
+                        "error"
+                    );
+
+                }
+
+                /*
+                Handle network error
+                */
+
+                else if (
+                    error instanceof TypeError
+                ) {
+
+                    showStatus(
+                        "Unable to connect to the server. Please check your internet connection.",
+                        "error"
+                    );
+
+                }
+
+                /*
+                Handle all other errors
+                */
+
+                else {
+
+                    showStatus(
+                        "Submission failed: " +
+                        error.message,
+                        "error"
+                    );
+
+                }
+
+
+                /*
+                Log technical details
+                */
+
+                console.error(
+                    "Submission error:",
+                    error
+                );
+
+            }
+
+
+            finally {
+
+
+                /*
+                Always restore button
+                */
+
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Submit Visit";
+
+                    submitButton.style.opacity =
+                        "1";
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/*
+====================================================
+GLOBAL JAVASCRIPT ERROR HANDLER
+====================================================
+*/
+
+window.addEventListener(
+    "error",
+    function (event) {
+
+        console.error(
+            "Unexpected JavaScript error:",
+            event.error
+        );
 
     }
+);
 
-    if(form.visitDate.value===""){
 
-        showMessage("Visit date is required.","red");
+/*
+====================================================
+UNHANDLED PROMISE ERROR HANDLER
+====================================================
+*/
 
-        return false;
+window.addEventListener(
+    "unhandledrejection",
+    function (event) {
+
+        console.error(
+            "Unhandled Promise rejection:",
+            event.reason
+        );
 
     }
-
-    if(form.caregiver.value.trim()===""){
-
-        showMessage("Caregiver name is required.","red");
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-//====================================================
-// SUBMIT
-//====================================================
-
-form.addEventListener("submit",submitForm);
-
-function submitForm(e){
-
-    e.preventDefault();
-
-    if(!validateForm()) return;
-
-    submitButton.disabled = true;
-
-    submitButton.innerText = "Submitting...";
-
-    showMessage("Uploading visit...","blue");
-
-    const formData = new FormData(form);
-
-    fetch(SCRIPT_URL,{
-
-        method:"POST",
-
-        body:formData
-
-    })
-
-    .then(response=>response.text())
-
-    .then(result=>{
-
-        console.log(result);
-
-        showMessage("Visit submitted successfully.","green");
-
-        resetForm();
-
-    })
-
-    .catch(error=>{
-
-        console.error(error);
-
-        showMessage("Unable to submit visit.","red");
-
-    })
-
-    .finally(()=>{
-
-        submitButton.disabled=false;
-
-        submitButton.innerText="Submit Visit";
-
-    });
-
-}
-
-//====================================================
-// RESET
-//====================================================
-
-function resetForm(){
-
-    form.reset();
-
-    preview.style.display="none";
-
-    preview.removeAttribute("src");
-
-    latitude.value="";
-
-    longitude.value="";
-
-    setTimestamp();
-
-    getCurrentLocation();
-
-}
-
-//====================================================
-// STATUS MESSAGE
-//====================================================
-
-function showMessage(message,color){
-
-    status.innerHTML = message;
-
-    status.style.color = color;
-
-}
-
-//====================================================
-// OPTIONAL NETWORK CHECK
-//====================================================
-
-window.addEventListener("offline",function(){
-
-    showMessage("You are offline.","orange");
-
-});
-
-window.addEventListener("online",function(){
-
-    showMessage("Internet connection restored.","green");
-
-});
-
-//====================================================
-// OPTIONAL AUTO DATE
-//====================================================
-
-const visitDateField = document.querySelector("input[name='visitDate']");
-
-if(visitDateField){
-
-    visitDateField.valueAsDate = new Date();
-
-}
+);
