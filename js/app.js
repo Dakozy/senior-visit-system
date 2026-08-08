@@ -22,7 +22,7 @@ CONFIGURATION
 */
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbxrhsQri6SpekHRtdrCk73H2xwbGPpWP-I3Z5Yopl3sH9xy3tgUxIwHbm9PALka3nm8/exec";
+"https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
 
 
 /*
