@@ -1,102 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <link rel="manifest" href="manifest.json">
+
 <meta name="theme-color" content="#0B6E4F">
 
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="default"
+>
 
-<meta name="apple-mobile-web-app-title" content="Senior Visits">
+<meta
+  name="apple-mobile-web-app-title"
+  content="Senior Visits"
+>
 
-<link rel="icon" href="images/icons/icon-192x192.png">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<link
+  rel="icon"
+  href="images/icons/icon-192x192.png"
+>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
 <title>Senior Visit Form</title>
+
 </head>
 
-<body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:15px;">
 
-<div style="max-width:850px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 8px #ccc;">
+<body
+style="
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+padding:15px;
+">
+
+
+<div
+style="
+max-width:850px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 8px #ccc;
+"
+>
+
 
 <h2 style="text-align:center;margin-top:0;">
 Senior Caregiver Visit Form
 </h2>
 
+
 <form id="visitForm">
 
-<label>Beneficiary Name</label>
+
+<label for="beneficiary">
+Beneficiary Name
+</label>
+
 <input
 type="text"
+id="beneficiary"
 name="beneficiary"
 required
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Bathroom Assistance</label>
+
+<label for="bathroom">
+Bathroom Assistance
+</label>
+
 <input
 type="text"
+id="bathroom"
 name="bathroom"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Mobility / Transfer</label>
+
+<label for="mobility">
+Mobility / Transfer
+</label>
+
 <input
 type="text"
+id="mobility"
 name="mobility"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Meals Served</label>
+
+<label for="meals">
+Meals Served
+</label>
+
 <input
 type="text"
+id="meals"
 name="meals"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Laundry</label>
+
+<label for="laundry">
+Laundry
+</label>
+
 <input
 type="text"
+id="laundry"
 name="laundry"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>House Keeping</label>
+
+<label for="housekeeping">
+House Keeping
+</label>
+
 <input
 type="text"
+id="housekeeping"
 name="housekeeping"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Medication</label>
+
+<label for="medication">
+Medication
+</label>
+
 <input
 type="text"
+id="medication"
 name="medication"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Observation</label>
+
+<label for="observation">
+Observation
+</label>
+
 <textarea
+id="observation"
 name="observation"
-style="width:100%;height:90px;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;"></textarea>
+style="
+width:100%;
+height:90px;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+></textarea>
 
-<label>Visit Date</label>
+
+<label for="visitDate">
+Visit Date
+</label>
+
 <input
 type="date"
+id="visitDate"
 name="visitDate"
 required
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Caregiver Name</label>
+
+<label for="caregiver">
+Caregiver Name
+</label>
+
 <input
 type="text"
+id="caregiver"
 name="caregiver"
 required
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Supervisor</label>
+
+<label for="supervisor">
+Supervisor
+</label>
+
 <input
 type="text"
+id="supervisor"
 name="supervisor"
-style="width:100%;padding:10px;margin:6px 0 15px;border:1px solid #ccc;border-radius:4px;">
+style="
+width:100%;
+padding:10px;
+margin:6px 0 15px;
+border:1px solid #ccc;
+border-radius:4px;
+"
+>
 
-<label>Beneficiary Photo</label>
+
+<label for="photo">
+Beneficiary Photo
+</label>
 
 <input
 type="file"
@@ -104,139 +277,132 @@ id="photo"
 name="photo"
 accept="image/*"
 capture="environment"
-style="width:100%;margin:8px 0 15px;">
+style="
+width:100%;
+margin:8px 0 15px;
+"
+>
+
 
 <img
 id="preview"
-style="display:none;width:220px;border:1px solid #ccc;border-radius:5px;margin-bottom:15px;">
+alt="Photo preview"
+style="
+display:none;
+width:220px;
+border:1px solid #ccc;
+border-radius:5px;
+margin-bottom:15px;
+"
+>
 
-<input type="hidden" name="latitude" id="latitude">
-<input type="hidden" name="longitude" id="longitude">
-<input type="hidden" name="timestamp" id="timestamp">
+
+<input
+type="hidden"
+name="latitude"
+id="latitude"
+>
+
+<input
+type="hidden"
+name="longitude"
+id="longitude"
+>
+
+<input
+type="hidden"
+name="timestamp"
+id="timestamp"
+>
+
 
 <button
 type="submit"
-style="background:#0b6efd;color:white;border:none;padding:12px 25px;border-radius:5px;font-size:16px;cursor:pointer;width:100%;">
+id="submitButton"
+style="
+background:#0b6efd;
+color:white;
+border:none;
+padding:12px 25px;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+width:100%;
+"
+>
 
 Submit Visit
 
 </button>
 
+
 </form>
 
-<p id="status" style="text-align:center;font-weight:bold;margin-top:20px;"></p>
+
+<p
+id="status"
+role="alert"
+aria-live="polite"
+style="
+text-align:center;
+font-weight:bold;
+margin-top:20px;
+"
+></p>
+
 
 </div>
 
-<script src="js/app.js">
 
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxrhsQri6SpekHRtdrCk73H2xwbGPpWP-I3Z5Yopl3sH9xy3tgUxIwHbm9PALka3nm8/exec";
+<!--
+====================================================
+MAIN APPLICATION JAVASCRIPT
+====================================================
+-->
 
-document.getElementById("timestamp").value=new Date().toISOString();
+<script src="js/app.js"></script>
 
-if(navigator.geolocation){
 
-navigator.geolocation.getCurrentPosition(function(position){
-
-document.getElementById("latitude").value=position.coords.latitude;
-
-document.getElementById("longitude").value=position.coords.longitude;
-
-});
-
-}
-
-const photo=document.getElementById("photo");
-
-const preview=document.getElementById("preview");
-
-photo.onchange=function(){
-
-if(this.files.length>0){
-
-preview.src=URL.createObjectURL(this.files[0]);
-
-preview.style.display="block";
-
-}
-
-};
-
-document.getElementById("visitForm").addEventListener("submit",function(e){
-
-e.preventDefault();
-
-const status=document.getElementById("status");
-
-status.style.color="blue";
-
-status.innerHTML="Submitting...";
-
-const formData=new FormData(this);
-
-fetch(SCRIPT_URL,{
-
-method:"POST",
-
-body:formData
-
-})
-
-.then(response=>response.text())
-
-.then(data=>{
-
-status.style.color="green";
-
-status.innerHTML="Visit submitted successfully.";
-
-document.getElementById("visitForm").reset();
-
-preview.style.display="none";
-
-document.getElementById("timestamp").value=new Date().toISOString();
-
-})
-
-.catch(error=>{
-
-status.style.color="red";
-
-status.innerHTML="Submission failed.";
-
-console.log(error);
-
-});
-
-});
-
-</script>
+<!--
+====================================================
+SERVICE WORKER
+====================================================
+-->
 
 <script>
 
-if("serviceWorker" in navigator){
+if ("serviceWorker" in navigator) {
 
-window.addEventListener("load",()=>{
+    window.addEventListener("load", function () {
 
-navigator.serviceWorker.register("service-worker.js")
+        navigator.serviceWorker
+            .register("service-worker.js")
 
-.then(reg=>{
+            .then(function (registration) {
 
-console.log("Service Worker Registered",reg);
+                console.log(
+                    "Service Worker registered successfully:",
+                    registration.scope
+                );
 
-})
+            })
 
-.catch(err=>{
+            .catch(function (error) {
 
-console.error(err);
+                console.error(
+                    "Service Worker registration failed:",
+                    error
+                );
 
-});
+            });
 
-});
+    });
 
 }
 
 </script>
-  
+
+
 </body>
+
 </html>
