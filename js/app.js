@@ -1,3 +1,4 @@
+```javascript
 /*
 ====================================================
 Senior Care Visit Form
@@ -11,6 +12,9 @@ Google Apps Script Web App
 
 Database:
 Google Sheets
+
+PHOTO:
+Browser File → Base64 → Google Apps Script → Google Drive
 ====================================================
 */
 
@@ -21,11 +25,9 @@ CONFIGURATION
 ====================================================
 */
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
+const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
 
-//const SCRIPT_url = "https://script.google.com/macros/s/AKfycbwNtvGU1b5_odSFY84fx9ogzz4cLh_l77_Ha_XbAt7YkZS9prdUk1yReFZChCt0_Pcb/exec";
-
-//const SCRIPT_url = "https://script.google.com/macros/s/AKfycbwj8v72FOKbIJYmEo8bQi3NDoG_2S-zSeSJprdpJLw8vY9aSsQkPJx6fmrWJ6KTsUv1/exec";
 
 /*
 ====================================================
@@ -105,30 +107,35 @@ function showStatus(
     if (!status) return;
 
 
-    status.textContent = message;
+    status.textContent =
+        message;
 
 
     if (type === "success") {
 
-        status.style.color = "green";
+        status.style.color =
+            "green";
 
     }
 
     else if (type === "error") {
 
-        status.style.color = "red";
+        status.style.color =
+            "red";
 
     }
 
     else if (type === "warning") {
 
-        status.style.color = "orange";
+        status.style.color =
+            "orange";
 
     }
 
     else {
 
-        status.style.color = "blue";
+        status.style.color =
+            "blue";
 
     }
 
@@ -174,11 +181,20 @@ if ("geolocation" in navigator) {
 
         function (position) {
 
-            latitude.value =
-                position.coords.latitude;
+            if (latitude) {
 
-            longitude.value =
-                position.coords.longitude;
+                latitude.value =
+                    position.coords.latitude;
+
+            }
+
+            if (longitude) {
+
+                longitude.value =
+                    position.coords.longitude;
+
+            }
+
 
             console.log(
                 "Location captured successfully."
@@ -193,9 +209,9 @@ if ("geolocation" in navigator) {
                 error.message
             );
 
+
             /*
-            Do not stop the entire form.
-            The visit can still be submitted.
+            Do not stop the form.
             */
 
             showStatus(
@@ -237,41 +253,67 @@ if (photo) {
         function () {
 
             /*
+            ------------------------------------------------
             Remove previous preview
+            ------------------------------------------------
             */
 
-            preview.style.display = "none";
+            if (preview) {
 
-            preview.removeAttribute("src");
+                preview.style.display =
+                    "none";
+
+                preview.removeAttribute(
+                    "src"
+                );
+
+            }
 
 
             /*
+            ------------------------------------------------
             No file selected
+            ------------------------------------------------
             */
 
-            if (!this.files || this.files.length === 0) {
+            if (
+                !this.files ||
+                this.files.length === 0
+            ) {
 
                 return;
 
             }
 
+
+            /*
+            ------------------------------------------------
+            Get selected file
+            ------------------------------------------------
+            */
 
             const file =
                 this.files[0];
 
 
             /*
+            ------------------------------------------------
             Validate file type
+            ------------------------------------------------
             */
 
-            if (!file.type.startsWith("image/")) {
+            if (
+                !file.type ||
+                !file.type.startsWith("image/")
+            ) {
 
                 showStatus(
                     "Please select a valid image file.",
                     "error"
                 );
 
-                this.value = "";
+                this.value =
+                    "";
 
                 return;
 
@@ -279,22 +321,27 @@ if (photo) {
 
 
             /*
-            Maximum file size:
-            5 MB
+            ------------------------------------------------
+            Maximum photo size: 5 MB
+            ------------------------------------------------
             */
 
             const MAX_FILE_SIZE =
                 5 * 1024 * 1024;
 
 
-            if (file.size > MAX_FILE_SIZE) {
+            if (
+                file.size >
+                MAX_FILE_SIZE
+            ) {
 
                 showStatus(
                     "Photo is too large. Maximum size is 5 MB.",
                     "error"
                 );
 
-                this.value = "";
+                this.value =
+                    "";
 
                 return;
 
@@ -302,26 +349,95 @@ if (photo) {
 
 
             /*
+            ------------------------------------------------
             Create preview
+            ------------------------------------------------
             */
 
-            const imageURL =
-                URL.createObjectURL(file);
+            if (preview) {
 
-            preview.src = imageURL;
+                const imageURL =
+                    URL.createObjectURL(
+                        file
+                    );
 
-            preview.style.display = "block";
+
+                preview.src =
+                    imageURL;
 
 
-            /*
-            Release object URL after image loads
-            */
+                preview.style.display =
+                    "block";
 
-            preview.onload = function () {
 
-                URL.revokeObjectURL(imageURL);
+                preview.onload =
+                    function () {
 
-            };
+                        URL.revokeObjectURL(
+                            imageURL
+                        );
+
+                    };
+
+            }
+
+        }
+    );
+
+}
+
+
+/*
+====================================================
+UTILITY:
+CONVERT FILE TO BASE64
+====================================================
+
+Returns the complete data URL:
+
+data:image/jpeg;base64,/9j/4AAQ...
+
+Code.gs can decode this and save it
+directly to Google Drive.
+====================================================
+*/
+
+function fileToBase64(
+    file
+) {
+
+    return new Promise(
+        function (resolve, reject) {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function () {
+
+                    resolve(
+                        reader.result
+                    );
+
+                };
+
+
+            reader.onerror =
+                function () {
+
+                    reject(
+                        new Error(
+                            "Unable to read the selected photo."
+                        )
+                    );
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
 
         }
     );
@@ -345,7 +461,9 @@ if (form) {
 
 
             /*
+            ------------------------------------------------
             Prevent accidental double submission
+            ------------------------------------------------
             */
 
             if (
@@ -359,10 +477,14 @@ if (form) {
 
 
             /*
+            ------------------------------------------------
             Browser validation
+            ------------------------------------------------
             */
 
-            if (!form.checkValidity()) {
+            if (
+                !form.checkValidity()
+            ) {
 
                 form.reportValidity();
 
@@ -372,10 +494,14 @@ if (form) {
 
 
             /*
-            Check Internet connection
+            ------------------------------------------------
+            Internet connection
+            ------------------------------------------------
             */
 
-            if (!navigator.onLine) {
+            if (
+                !navigator.onLine
+            ) {
 
                 showStatus(
                     "You appear to be offline. Please reconnect and try again.",
@@ -388,7 +514,9 @@ if (form) {
 
 
             /*
+            ------------------------------------------------
             Validate Apps Script URL
+            ------------------------------------------------
             */
 
             if (
@@ -401,10 +529,12 @@ if (form) {
                     "error"
                 );
 
+
                 console.error(
                     "Invalid SCRIPT_URL:",
                     SCRIPT_URL
                 );
+
 
                 return;
 
@@ -412,15 +542,18 @@ if (form) {
 
 
             /*
+            ------------------------------------------------
             Disable submit button
+            ------------------------------------------------
             */
 
             if (submitButton) {
 
-                submitButton.disabled = true;
+                submitButton.disabled =
+                    true;
 
                 submitButton.textContent =
-                    "Submitting...";
+                    "Preparing...";
 
                 submitButton.style.opacity =
                     "0.7";
@@ -429,13 +562,15 @@ if (form) {
 
 
             showStatus(
-                "Submitting visit record...",
+                "Preparing visit record...",
                 "info"
             );
 
 
             /*
-            Collect form data
+            =================================================
+            COLLECT NORMAL FORM DATA
+            =================================================
             */
 
             const formData =
@@ -443,7 +578,244 @@ if (form) {
 
 
             /*
-            Timeout controller
+            =================================================
+            CREATE URLSearchParams
+            =================================================
+
+            We intentionally do NOT send the original
+            multipart FormData.
+
+            Instead, we create a normal text payload.
+
+            This makes the request compatible with the
+            Apps Script backend.
+            =================================================
+            */
+
+            const payload =
+                new URLSearchParams();
+
+
+            /*
+            -------------------------------------------------
+            NORMAL FORM FIELDS
+            -------------------------------------------------
+            */
+
+            payload.append(
+                "beneficiary",
+                formData.get("beneficiary") || ""
+            );
+
+
+            payload.append(
+                "bathroom",
+                formData.get("bathroom") || ""
+            );
+
+
+            payload.append(
+                "mobility",
+                formData.get("mobility") || ""
+            );
+
+
+            payload.append(
+                "meals",
+                formData.get("meals") || ""
+            );
+
+
+            payload.append(
+                "laundry",
+                formData.get("laundry") || ""
+            );
+
+
+            payload.append(
+                "housekeeping",
+                formData.get("housekeeping") || ""
+            );
+
+
+            payload.append(
+                "medication",
+                formData.get("medication") || ""
+            );
+
+
+            payload.append(
+                "observation",
+                formData.get("observation") || ""
+            );
+
+
+            payload.append(
+                "visitDate",
+                formData.get("visitDate") || ""
+            );
+
+
+            payload.append(
+                "caregiver",
+                formData.get("caregiver") || ""
+            );
+
+
+            payload.append(
+                "supervisor",
+                formData.get("supervisor") || ""
+            );
+
+
+            payload.append(
+                "latitude",
+                formData.get("latitude") || ""
+            );
+
+
+            payload.append(
+                "longitude",
+                formData.get("longitude") || ""
+            );
+
+
+            payload.append(
+                "timestamp",
+                formData.get("timestamp") || ""
+            );
+
+
+            /*
+            =================================================
+            PHOTO PROCESSING
+            =================================================
+            */
+
+            let selectedFile =
+                null;
+
+
+            if (
+                photo &&
+                photo.files &&
+                photo.files.length > 0
+            ) {
+
+                selectedFile =
+                    photo.files[0];
+
+            }
+
+
+            /*
+            -------------------------------------------------
+            If photo exists, convert it to Base64
+            -------------------------------------------------
+            */
+
+            if (selectedFile) {
+
+                showStatus(
+                    "Preparing photo...",
+                    "info"
+                );
+
+
+                if (submitButton) {
+
+                    submitButton.textContent =
+                        "Preparing Photo...";
+
+                }
+
+
+                const photoBase64 =
+                    await fileToBase64(
+                        selectedFile
+                    );
+
+
+                /*
+                ------------------------------------------------
+                Send the exact field names expected by Code.gs
+                ------------------------------------------------
+                */
+
+                payload.append(
+                    "photoBase64",
+                    photoBase64
+                );
+
+
+                payload.append(
+                    "photoName",
+                    selectedFile.name ||
+                    "beneficiary_photo.jpg"
+                );
+
+
+                payload.append(
+                    "photoType",
+                    selectedFile.type ||
+                    "image/jpeg"
+                );
+
+
+                console.log(
+                    "Photo prepared successfully.",
+                    {
+                        name:
+                            selectedFile.name,
+
+                        type:
+                            selectedFile.type,
+
+                        size:
+                            selectedFile.size
+                    }
+                );
+
+            }
+
+            else {
+
+                /*
+                ------------------------------------------------
+                No photo selected.
+                Send empty photo fields explicitly.
+                ------------------------------------------------
+                */
+
+                payload.append(
+                    "photoBase64",
+                    ""
+                );
+
+
+                payload.append(
+                    "photoName",
+                    ""
+                );
+
+
+                payload.append(
+                    "photoType",
+                    ""
+                );
+
+
+                console.log(
+                    "No photo was selected."
+                );
+
+            }
+
+
+            /*
+            =================================================
+            TIMEOUT CONTROLLER
+            =================================================
             */
 
             const controller =
@@ -457,16 +829,31 @@ if (form) {
                         controller.abort();
 
                     },
-                    30000
+                    60000
                 );
 
 
             try {
 
-
                 /*
-                Send request
+                =================================================
+                SEND REQUEST
+                =================================================
                 */
+
+                showStatus(
+                    "Submitting visit record...",
+                    "info"
+                );
+
+
+                if (submitButton) {
+
+                    submitButton.textContent =
+                        "Submitting...";
+
+                }
+
 
                 const response =
                     await fetch(
@@ -474,7 +861,13 @@ if (form) {
                         {
                             method: "POST",
 
-                            body: formData,
+                            headers: {
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded;charset=UTF-8"
+                            },
+
+                            body:
+                                payload.toString(),
 
                             signal:
                                 controller.signal
@@ -483,17 +876,25 @@ if (form) {
 
 
                 /*
+                -------------------------------------------------
                 Clear timeout
+                -------------------------------------------------
                 */
 
-                clearTimeout(timeout);
+                clearTimeout(
+                    timeout
+                );
 
 
                 /*
-                Check HTTP status
+                -------------------------------------------------
+                HTTP status
+                -------------------------------------------------
                 */
 
-                if (!response.ok) {
+                if (
+                    !response.ok
+                ) {
 
                     throw new Error(
                         "Server returned HTTP " +
@@ -504,7 +905,9 @@ if (form) {
 
 
                 /*
-                Read response
+                -------------------------------------------------
+                Read server response
+                -------------------------------------------------
                 */
 
                 const responseText =
@@ -518,7 +921,9 @@ if (form) {
 
 
                 /*
-                Try to parse JSON
+                -------------------------------------------------
+                Parse JSON
+                -------------------------------------------------
                 */
 
                 let result;
@@ -527,16 +932,19 @@ if (form) {
                 try {
 
                     result =
-                        JSON.parse(responseText);
+                        JSON.parse(
+                            responseText
+                        );
 
                 }
 
                 catch (jsonError) {
 
-                    /*
-                    Apps Script returned something
-                    that was not valid JSON.
-                    */
+                    console.error(
+                        "Raw server response:",
+                        responseText
+                    );
+
 
                     throw new Error(
                         "Invalid response received from server."
@@ -546,7 +954,9 @@ if (form) {
 
 
                 /*
-                Check application-level response
+                =================================================
+                SUCCESS
+                =================================================
                 */
 
                 if (
@@ -554,21 +964,70 @@ if (form) {
                     result.success === true
                 ) {
 
-                    showStatus(
-                        "Visit submitted successfully.",
-                        "success"
+                    /*
+                    ------------------------------------------------
+                    Show success
+                    ------------------------------------------------
+                    */
+
+                    if (
+                        result.photoUploaded === true
+                    ) {
+
+                        showStatus(
+                            "Visit submitted successfully. Photo uploaded.",
+                            "success"
+                        );
+
+                    }
+
+                    else {
+
+                        showStatus(
+                            "Visit submitted successfully.",
+                            "success"
+                        );
+
+                    }
+
+
+                    /*
+                    ------------------------------------------------
+                    Log important server information
+                    ------------------------------------------------
+                    */
+
+                    console.log(
+                        "Request ID:",
+                        result.requestId
+                    );
+
+
+                    console.log(
+                        "Photo URL:",
+                        result.photoUrl
+                    );
+
+
+                    console.log(
+                        "Photo uploaded:",
+                        result.photoUploaded
                     );
 
 
                     /*
+                    ------------------------------------------------
                     Reset form
+                    ------------------------------------------------
                     */
 
                     form.reset();
 
 
                     /*
-                    Hide photo preview
+                    ------------------------------------------------
+                    Hide preview
+                    ------------------------------------------------
                     */
 
                     if (preview) {
@@ -584,34 +1043,54 @@ if (form) {
 
 
                     /*
-                    Generate new timestamp
+                    ------------------------------------------------
+                    Generate fresh timestamp
+                    ------------------------------------------------
                     */
 
                     updateTimestamp();
 
+                }
 
-                    /*
-                    Optional success log
-                    */
+                /*
+                =================================================
+                DUPLICATE
+                =================================================
+                */
 
-                    console.log(
-                        "Visit submitted successfully."
+                else if (
+                    result &&
+                    result.duplicate === true
+                ) {
+
+                    showStatus(
+                        result.message ||
+                        "This visit appears to have already been submitted.",
+                        "warning"
+                    );
+
+
+                    console.warn(
+                        "Duplicate submission:",
+                        result.requestId
                     );
 
                 }
 
-                else {
+                /*
+                =================================================
+                SERVER ERROR
+                =================================================
+                */
 
-                    /*
-                    Apps Script responded,
-                    but reported an application error.
-                    */
+                else {
 
                     const serverMessage =
                         result &&
                         result.error
                             ? result.error
                             : "The server rejected the submission.";
+
 
                     throw new Error(
                         serverMessage
@@ -624,16 +1103,21 @@ if (form) {
 
             catch (error) {
 
-
                 /*
+                ------------------------------------------------
                 Clear timeout
+                ------------------------------------------------
                 */
 
-                clearTimeout(timeout);
+                clearTimeout(
+                    timeout
+                );
 
 
                 /*
-                Handle timeout
+                ------------------------------------------------
+                Timeout
+                ------------------------------------------------
                 */
 
                 if (
@@ -649,7 +1133,9 @@ if (form) {
                 }
 
                 /*
-                Handle network error
+                ------------------------------------------------
+                Network error
+                ------------------------------------------------
                 */
 
                 else if (
@@ -664,7 +1150,9 @@ if (form) {
                 }
 
                 /*
-                Handle all other errors
+                ------------------------------------------------
+                Other errors
+                ------------------------------------------------
                 */
 
                 else {
@@ -679,7 +1167,9 @@ if (form) {
 
 
                 /*
-                Log technical details
+                ------------------------------------------------
+                Technical log
+                ------------------------------------------------
                 */
 
                 console.error(
@@ -692,9 +1182,10 @@ if (form) {
 
             finally {
 
-
                 /*
-                Always restore button
+                ------------------------------------------------
+                Always restore submit button
+                ------------------------------------------------
                 */
 
                 if (submitButton) {
@@ -754,3 +1245,4 @@ window.addEventListener(
 
     }
 );
+```
