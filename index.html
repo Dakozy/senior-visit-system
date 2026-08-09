@@ -5,6 +5,279 @@
 
 <meta charset="UTF-8">
 
+<link 
+rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+
+body{
+
+font-family:'Segoe UI',Arial,sans-serif;
+
+background:#eef7f3;
+
+padding:15px;
+
+margin:0;
+
+}
+
+
+
+.container{
+
+max-width:850px;
+
+margin:auto;
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.12);
+
+}
+
+
+
+.header{
+
+text-align:center;
+
+color:#0B6E4F;
+
+margin-bottom:25px;
+
+}
+
+
+
+.logo{
+
+font-size:45px;
+
+margin-bottom:10px;
+
+}
+
+
+
+.header h1{
+
+font-size:24px;
+
+margin:5px 0;
+
+}
+
+
+
+.header h3{
+
+font-size:18px;
+
+font-weight:500;
+
+color:#555;
+
+}
+
+
+
+label{
+
+display:block;
+
+font-weight:600;
+
+margin-top:15px;
+
+color:#333;
+
+}
+
+
+
+label i{
+
+color:#0B6E4F;
+
+width:25px;
+
+}
+
+
+
+input,
+textarea{
+
+width:100%;
+
+padding:13px;
+
+margin-top:7px;
+
+border:1px solid #ccc;
+
+border-radius:10px;
+
+font-size:15px;
+
+box-sizing:border-box;
+
+transition:.3s;
+
+}
+
+
+
+input:focus,
+textarea:focus{
+
+outline:none;
+
+border-color:#0B6E4F;
+
+box-shadow:0 0 5px rgba(11,110,79,.3);
+
+}
+
+
+
+textarea{
+
+height:110px;
+
+resize:none;
+
+}
+
+
+
+.section-title{
+
+margin-top:25px;
+
+padding:12px;
+
+background:#0B6E4F;
+
+color:white;
+
+border-radius:10px;
+
+font-size:17px;
+
+font-weight:bold;
+
+}
+
+
+
+.section-title i{
+
+margin-right:8px;
+
+}
+
+
+
+#photo{
+
+background:#f8f8f8;
+
+padding:10px;
+
+}
+
+
+
+#preview{
+
+display:none;
+
+width:220px;
+
+margin-top:15px;
+
+border-radius:12px;
+
+border:2px solid #0B6E4F;
+
+}
+
+
+
+button{
+
+margin-top:25px;
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:#0B6E4F;
+
+color:white;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+background:#08543c;
+
+}
+
+
+
+#status{
+
+text-align:center;
+
+font-weight:bold;
+
+margin-top:20px;
+
+}
+
+
+
+@media(max-width:600px){
+
+.container{
+
+padding:18px;
+
+}
+
+
+.header h1{
+
+font-size:20px;
+
+}
+
+}
+
+
+</style>
+
+  
+
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#0B6E4F">
@@ -39,24 +312,232 @@
 
 
 <body
-style="
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-padding:15px;
-">
+
+<div class="container">
 
 
-<div
-style="
-max-width:850px;
-margin:auto;
-background:#fff;
-padding:20px;
-border-radius:8px;
-box-shadow:0 0 8px #ccc;
-"
+<header class="header">
+
+<div class="logo">
+<i class="fa-solid fa-heart-pulse"></i>
+</div>
+
+<h1>
+O.B. LULU-BRIGGS FOUNDATION
+</h1>
+
+<h3>
+<i class="fa-solid fa-user-nurse"></i>
+Visit Data Capture Form
+</h3>
+
+</header>
+
+
+<form id="visitForm">
+
+
+<div class="section-title">
+<i class="fa-solid fa-user"></i>
+Beneficiary Information
+</div>
+
+
+<label>
+<i class="fa-solid fa-person"></i>
+Beneficiary Name
+</label>
+
+<input
+type="text"
+id="beneficiary"
+name="beneficiary"
+required
 >
 
+
+<label>
+<i class="fa-solid fa-toilet"></i>
+Bathroom Assistance
+</label>
+
+<input
+type="text"
+id="bathroom"
+name="bathroom"
+>
+
+
+<label>
+<i class="fa-solid fa-person-walking"></i>
+Mobility / Transfer
+</label>
+
+<input
+type="text"
+id="mobility"
+name="mobility"
+>
+
+
+<label>
+<i class="fa-solid fa-utensils"></i>
+Meals Served
+</label>
+
+<input
+type="text"
+id="meals"
+name="meals"
+>
+
+
+<label>
+<i class="fa-solid fa-shirt"></i>
+Laundry
+</label>
+
+<input
+type="text"
+id="laundry"
+name="laundry"
+>
+
+
+<label>
+<i class="fa-solid fa-house"></i>
+House Keeping
+</label>
+
+<input
+type="text"
+id="housekeeping"
+name="housekeeping"
+>
+
+
+<label>
+<i class="fa-solid fa-pills"></i>
+Medication
+</label>
+
+<input
+type="text"
+id="medication"
+name="medication"
+>
+
+
+
+<div class="section-title">
+<i class="fa-solid fa-notes-medical"></i>
+Visit Assessment
+</div>
+
+
+
+<label>
+<i class="fa-solid fa-eye"></i>
+Observation
+</label>
+
+<textarea
+id="observation"
+name="observation">
+</textarea>
+
+
+
+<label>
+<i class="fa-solid fa-calendar"></i>
+Visit Date
+</label>
+
+<input
+type="date"
+id="visitDate"
+name="visitDate"
+required
+>
+
+
+
+<label>
+<i class="fa-solid fa-user-nurse"></i>
+Caregiver Name
+</label>
+
+<input
+type="text"
+id="caregiver"
+name="caregiver"
+required
+>
+
+
+
+<label>
+<i class="fa-solid fa-user-check"></i>
+Supervisor
+</label>
+
+<input
+type="text"
+id="supervisor"
+name="supervisor"
+>
+
+
+
+<div class="section-title">
+<i class="fa-solid fa-camera"></i>
+Beneficiary Photo
+</div>
+
+
+
+<input
+type="file"
+id="photo"
+name="photo"
+accept="image/*"
+capture="environment"
+>
+
+
+
+<img
+id="preview"
+alt="Photo preview"
+>
+
+
+
+<input type="hidden" name="latitude" id="latitude">
+
+<input type="hidden" name="longitude" id="longitude">
+
+<input type="hidden" name="timestamp" id="timestamp">
+
+
+<button
+type="submit"
+id="submitButton"
+>
+
+<i class="fa-solid fa-paper-plane"></i>
+Submit Visit
+
+</button>
+
+
+</form>
+
+
+<p id="status"></p>
+
+
+</div>
 
 <h2 style="text-align:center;margin-top:0;">
 Senior Caregiver Visit Form
