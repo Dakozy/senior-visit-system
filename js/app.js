@@ -1,779 +1,572 @@
-```javascript
 /*
-====================================================
-Senior Care Visit Form
-app.js
 
-Frontend:
-GitHub Pages
+Senior Care Visit Formapp.js
 
-Backend:
-Google Apps Script Web App
+Frontend:GitHub Pages
 
-Database:
-Google Sheets
+Backend:Google Apps Script Web App
 
-PHOTO:
-Browser File → Base64 → Google Apps Script → Google Drive
-====================================================
 */
 
-
 /*
-====================================================
+
 CONFIGURATION
-====================================================
+
 */
 
-const SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
 
+//const SCRIPT_url = "https://script.google.com/macros/s/AKfycbwNtvGU1b5_odSFY84fx9ogzz4cLh_l77_Ha_XbAt7YkZS9prdUk1yReFZChCt0_Pcb/exec";
+
+//const SCRIPT_url = "https://script.google.com/macros/s/AKfycbwj8v72FOKbIJYmEo8bQi3NDoG_2S-zSeSJprdpJLw8vY9aSsQkPJx6fmrWJ6KTsUv1/exec";
 
 /*
-====================================================
+
 CONFIGURATION VALIDATION
-====================================================
+
 */
 
-if (
-    !SCRIPT_URL ||
-    !SCRIPT_URL.includes("/exec")
-) {
+if (!SCRIPT_URL ||!SCRIPT_URL.includes("/exec")) {
 
-    console.error(
-        "Invalid Apps Script Web App URL."
-    );
+console.error(
+    "Invalid Apps Script Web App URL."
+);
 
 }
 
-
 /*
-====================================================
+
 GET HTML ELEMENTS
-====================================================
+
 */
 
-const form =
-    document.getElementById("visitForm");
+const form =document.getElementById("visitForm");
 
-const status =
-    document.getElementById("status");
+const status =document.getElementById("status");
 
-const submitButton =
-    document.getElementById("submitButton");
+const submitButton =document.getElementById("submitButton");
 
-const photo =
-    document.getElementById("photo");
+const photo =document.getElementById("photo");
 
-const preview =
-    document.getElementById("preview");
+const preview =document.getElementById("preview");
 
-const timestamp =
-    document.getElementById("timestamp");
+const timestamp =document.getElementById("timestamp");
 
-const latitude =
-    document.getElementById("latitude");
+const latitude =document.getElementById("latitude");
 
-const longitude =
-    document.getElementById("longitude");
-
+const longitude =document.getElementById("longitude");
 
 /*
-====================================================
+
 INITIAL VALIDATION
-====================================================
+
 */
 
 if (!form) {
 
-    console.error(
-        "ERROR: visitForm was not found."
-    );
+console.error(
+    "ERROR: visitForm was not found."
+);
 
 }
 
-
 /*
-====================================================
+
 UTILITY: SHOW STATUS
-====================================================
+
 */
 
-function showStatus(
-    message,
-    type = "info"
-) {
+function showStatus(message,type = "info") {
 
-    if (!status) return;
+if (!status) return;
 
 
-    status.textContent =
-        message;
+status.textContent = message;
 
 
-    if (type === "success") {
+if (type === "success") {
 
-        status.style.color =
-            "green";
-
-    }
-
-    else if (type === "error") {
-
-        status.style.color =
-            "red";
-
-    }
-
-    else if (type === "warning") {
-
-        status.style.color =
-            "orange";
-
-    }
-
-    else {
-
-        status.style.color =
-            "blue";
-
-    }
+    status.style.color = "green";
 
 }
 
+else if (type === "error") {
 
-/*
-====================================================
-UTILITY: RESET TIMESTAMP
-====================================================
-*/
-
-function updateTimestamp() {
-
-    if (timestamp) {
-
-        timestamp.value =
-            new Date().toISOString();
-
-    }
+    status.style.color = "red";
 
 }
 
+else if (type === "warning") {
 
-/*
-====================================================
-INITIAL TIMESTAMP
-====================================================
-*/
-
-updateTimestamp();
-
-
-/*
-====================================================
-GEOLOCATION
-====================================================
-*/
-
-if ("geolocation" in navigator) {
-
-    navigator.geolocation.getCurrentPosition(
-
-        function (position) {
-
-            if (latitude) {
-
-                latitude.value =
-                    position.coords.latitude;
-
-            }
-
-            if (longitude) {
-
-                longitude.value =
-                    position.coords.longitude;
-
-            }
-
-
-            console.log(
-                "Location captured successfully."
-            );
-
-        },
-
-        function (error) {
-
-            console.warn(
-                "Unable to obtain location:",
-                error.message
-            );
-
-
-            /*
-            Do not stop the form.
-            */
-
-            showStatus(
-                "Location could not be obtained. You may continue.",
-                "warning"
-            );
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 300000
-        }
-
-    );
+    status.style.color = "orange";
 
 }
 
 else {
 
-    console.warn(
-        "Geolocation is not supported by this browser."
-    );
+    status.style.color = "blue";
 
 }
 
+}
 
 /*
-====================================================
+
+UTILITY: RESET TIMESTAMP
+
+*/
+
+function updateTimestamp() {
+
+if (timestamp) {
+
+    timestamp.value =
+        new Date().toISOString();
+
+}
+
+}
+
+/*
+
+INITIAL TIMESTAMP
+
+*/
+
+updateTimestamp();
+
+/*
+
+GEOLOCATION
+
+*/
+
+if ("geolocation" in navigator) {
+
+navigator.geolocation.getCurrentPosition(
+
+    function (position) {
+
+        latitude.value =
+            position.coords.latitude;
+
+        longitude.value =
+            position.coords.longitude;
+
+        console.log(
+            "Location captured successfully."
+        );
+
+    },
+
+    function (error) {
+
+        console.warn(
+            "Unable to obtain location:",
+            error.message
+        );
+
+        /*
+        Do not stop the entire form.
+        The visit can still be submitted.
+        */
+
+        showStatus(
+            "Location could not be obtained. You may continue.",
+            "warning"
+        );
+
+    },
+
+    {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000
+    }
+
+);
+
+}
+
+else {
+
+console.warn(
+    "Geolocation is not supported by this browser."
+);
+
+}
+
+/*
+
 PHOTO PREVIEW + VALIDATION
-====================================================
+
 */
 
 if (photo) {
 
-    photo.addEventListener(
-        "change",
-        function () {
+photo.addEventListener(
+    "change",
+    function () {
 
-            /*
-            ------------------------------------------------
-            Remove previous preview
-            ------------------------------------------------
-            */
+        /*
+        Remove previous preview
+        */
 
-            if (preview) {
+        preview.style.display = "none";
 
-                preview.style.display =
-                    "none";
-
-                preview.removeAttribute(
-                    "src"
-                );
-
-            }
+        preview.removeAttribute("src");
 
 
-            /*
-            ------------------------------------------------
-            No file selected
-            ------------------------------------------------
-            */
+        /*
+        No file selected
+        */
 
-            if (
-                !this.files ||
-                this.files.length === 0
-            ) {
+        if (!this.files || this.files.length === 0) {
 
-                return;
-
-            }
-
-
-            /*
-            ------------------------------------------------
-            Get selected file
-            ------------------------------------------------
-            */
-
-            const file =
-                this.files[0];
-
-
-            /*
-            ------------------------------------------------
-            Validate file type
-            ------------------------------------------------
-            */
-
-            if (
-                !file.type ||
-                !file.type.startsWith("image/")
-            ) {
-
-                showStatus(
-                    "Please select a valid image file.",
-                    "error"
-                );
-
-                this.value =
-                    "";
-
-                return;
-
-            }
-
-
-            /*
-            ------------------------------------------------
-            Maximum photo size: 5 MB
-            ------------------------------------------------
-            */
-
-            const MAX_FILE_SIZE =
-                5 * 1024 * 1024;
-
-
-            if (
-                file.size >
-                MAX_FILE_SIZE
-            ) {
-
-                showStatus(
-                    "Photo is too large. Maximum size is 5 MB.",
-                    "error"
-                );
-
-                this.value =
-                    "";
-
-                return;
-
-            }
-
-
-            /*
-            ------------------------------------------------
-            Create preview
-            ------------------------------------------------
-            */
-
-            if (preview) {
-
-                const imageURL =
-                    URL.createObjectURL(
-                        file
-                    );
-
-
-                preview.src =
-                    imageURL;
-
-
-                preview.style.display =
-                    "block";
-
-
-                preview.onload =
-                    function () {
-
-                        URL.revokeObjectURL(
-                            imageURL
-                        );
-
-                    };
-
-            }
+            return;
 
         }
-    );
-
-}
 
 
-/*
-====================================================
-UTILITY:
-CONVERT FILE TO BASE64
-====================================================
-
-Returns the complete data URL:
-
-data:image/jpeg;base64,/9j/4AAQ...
-
-Code.gs can decode this and save it
-directly to Google Drive.
-====================================================
-*/
-
-function fileToBase64(
-    file
-) {
-
-    return new Promise(
-        function (resolve, reject) {
-
-            const reader =
-                new FileReader();
+        const file =
+            this.files[0];
 
 
-            reader.onload =
-                function () {
+        /*
+        Validate file type
+        */
 
-                    resolve(
-                        reader.result
-                    );
+        if (!file.type.startsWith("image/")) {
 
-                };
-
-
-            reader.onerror =
-                function () {
-
-                    reject(
-                        new Error(
-                            "Unable to read the selected photo."
-                        )
-                    );
-
-                };
-
-
-            reader.readAsDataURL(
-                file
+            showStatus(
+                "Please select a valid image file.",
+                "error"
             );
 
+            this.value = "";
+
+            return;
+
         }
-    );
+
+
+        /*
+        Maximum file size:
+        5 MB
+        */
+
+        const MAX_FILE_SIZE =
+            5 * 1024 * 1024;
+
+
+        if (file.size > MAX_FILE_SIZE) {
+
+            showStatus(
+                "Photo is too large. Maximum size is 5 MB.",
+                "error"
+            );
+
+            this.value = "";
+
+            return;
+
+        }
+
+
+        /*
+        Create preview
+        */
+
+        const imageURL =
+            URL.createObjectURL(file);
+
+        preview.src = imageURL;
+
+        preview.style.display = "block";
+
+
+        /*
+        Release object URL after image loads
+        */
+
+        preview.onload = function () {
+
+            URL.revokeObjectURL(imageURL);
+
+        };
+
+    }
+);
 
 }
 
-
 /*
-====================================================
+
 FORM SUBMISSION
-====================================================
+
 */
 
 if (form) {
 
-    form.addEventListener(
-        "submit",
-        async function (event) {
+form.addEventListener(
+    "submit",
+    async function (event) {
 
-            event.preventDefault();
-
-
-            /*
-            ------------------------------------------------
-            Prevent accidental double submission
-            ------------------------------------------------
-            */
-
-            if (
-                submitButton &&
-                submitButton.disabled
-            ) {
-
-                return;
-
-            }
+        event.preventDefault();
 
 
-            /*
-            ------------------------------------------------
-            Browser validation
-            ------------------------------------------------
-            */
+        /*
+        Prevent accidental double submission
+        */
 
-            if (
-                !form.checkValidity()
-            ) {
+        if (
+            submitButton &&
+            submitButton.disabled
+        ) {
 
-                form.reportValidity();
+            return;
 
-                return;
-
-            }
+        }
 
 
-            /*
-            ------------------------------------------------
-            Internet connection
-            ------------------------------------------------
-            */
+        /*
+        Browser validation
+        */
 
-            if (
-                !navigator.onLine
-            ) {
+        if (!form.checkValidity()) {
 
-                showStatus(
-                    "You appear to be offline. Please reconnect and try again.",
-                    "error"
-                );
+            form.reportValidity();
 
-                return;
+            return;
 
-            }
+        }
 
 
-            /*
-            ------------------------------------------------
-            Validate Apps Script URL
-            ------------------------------------------------
-            */
+        /*
+        Check Internet connection
+        */
 
-            if (
-                !SCRIPT_URL ||
-                !SCRIPT_URL.includes("/exec")
-            ) {
-
-                showStatus(
-                    "System configuration error. Please contact the administrator.",
-                    "error"
-                );
-
-
-                console.error(
-                    "Invalid SCRIPT_URL:",
-                    SCRIPT_URL
-                );
-
-
-                return;
-
-            }
-
-
-            /*
-            ------------------------------------------------
-            Disable submit button
-            ------------------------------------------------
-            */
-
-            if (submitButton) {
-
-                submitButton.disabled =
-                    true;
-
-                submitButton.textContent =
-                    "Preparing...";
-
-                submitButton.style.opacity =
-                    "0.7";
-
-            }
-
+        if (!navigator.onLine) {
 
             showStatus(
-                "Preparing visit record...",
-                "info"
+                "You appear to be offline. Please reconnect and try again.",
+                "error"
             );
+
+            return;
+
+        }
+
+
+        /*
+        Validate Apps Script URL
+        */
+
+        if (
+            !SCRIPT_URL ||
+            !SCRIPT_URL.includes("/exec")
+        ) {
+
+            showStatus(
+                "System configuration error. Please contact the administrator.",
+                "error"
+            );
+
+            console.error(
+                "Invalid SCRIPT_URL:",
+                SCRIPT_URL
+            );
+
+            return;
+
+        }
+
+
+        /*
+        Disable submit button
+        */
+
+        if (submitButton) {
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Submitting...";
+
+            submitButton.style.opacity =
+                "0.7";
+
+        }
+
+
+        showStatus(
+            "Submitting visit record...",
+            "info"
+        );
+
+
+        /*
+        Collect form data
+        */
+
+        const formData =
+            new FormData(form);
+
+
+        /*
+        Timeout controller
+        */
+
+        const controller =
+            new AbortController();
+
+
+        const timeout =
+            setTimeout(
+                function () {
+
+                    controller.abort();
+
+                },
+                30000
+            );
+
+
+        try {
 
 
             /*
-            =================================================
-            COLLECT NORMAL FORM DATA
-            =================================================
+            Send request
             */
 
-            const formData =
-                new FormData(form);
+            const response =
+                await fetch(
+                    SCRIPT_URL,
+                    {
+                        method: "POST",
+
+                        body: formData,
+
+                        signal:
+                            controller.signal
+                    }
+                );
 
 
             /*
-            =================================================
-            CREATE URLSearchParams
-            =================================================
-
-            We intentionally do NOT send the original
-            multipart FormData.
-
-            Instead, we create a normal text payload.
-
-            This makes the request compatible with the
-            Apps Script backend.
-            =================================================
+            Clear timeout
             */
 
-            const payload =
-                new URLSearchParams();
+            clearTimeout(timeout);
 
 
             /*
-            -------------------------------------------------
-            NORMAL FORM FIELDS
-            -------------------------------------------------
+            Check HTTP status
             */
 
-            payload.append(
-                "beneficiary",
-                formData.get("beneficiary") || ""
-            );
+            if (!response.ok) {
 
-
-            payload.append(
-                "bathroom",
-                formData.get("bathroom") || ""
-            );
-
-
-            payload.append(
-                "mobility",
-                formData.get("mobility") || ""
-            );
-
-
-            payload.append(
-                "meals",
-                formData.get("meals") || ""
-            );
-
-
-            payload.append(
-                "laundry",
-                formData.get("laundry") || ""
-            );
-
-
-            payload.append(
-                "housekeeping",
-                formData.get("housekeeping") || ""
-            );
-
-
-            payload.append(
-                "medication",
-                formData.get("medication") || ""
-            );
-
-
-            payload.append(
-                "observation",
-                formData.get("observation") || ""
-            );
-
-
-            payload.append(
-                "visitDate",
-                formData.get("visitDate") || ""
-            );
-
-
-            payload.append(
-                "caregiver",
-                formData.get("caregiver") || ""
-            );
-
-
-            payload.append(
-                "supervisor",
-                formData.get("supervisor") || ""
-            );
-
-
-            payload.append(
-                "latitude",
-                formData.get("latitude") || ""
-            );
-
-
-            payload.append(
-                "longitude",
-                formData.get("longitude") || ""
-            );
-
-
-            payload.append(
-                "timestamp",
-                formData.get("timestamp") || ""
-            );
-
-
-            /*
-            =================================================
-            PHOTO PROCESSING
-            =================================================
-            */
-
-            let selectedFile =
-                null;
-
-
-            if (
-                photo &&
-                photo.files &&
-                photo.files.length > 0
-            ) {
-
-                selectedFile =
-                    photo.files[0];
+                throw new Error(
+                    "Server returned HTTP " +
+                    response.status
+                );
 
             }
 
 
             /*
-            -------------------------------------------------
-            If photo exists, convert it to Base64
-            -------------------------------------------------
+            Read response
             */
 
-            if (selectedFile) {
+            const responseText =
+                await response.text();
+
+
+            console.log(
+                "Apps Script response:",
+                responseText
+            );
+
+
+            /*
+            Try to parse JSON
+            */
+
+            let result;
+
+
+            try {
+
+                result =
+                    JSON.parse(responseText);
+
+            }
+
+            catch (jsonError) {
+
+                /*
+                Apps Script returned something
+                that was not valid JSON.
+                */
+
+                throw new Error(
+                    "Invalid response received from server."
+                );
+
+            }
+
+
+            /*
+            Check application-level response
+            */
+
+            if (
+                result &&
+                result.success === true
+            ) {
 
                 showStatus(
-                    "Preparing photo...",
-                    "info"
+                    "Visit submitted successfully.",
+                    "success"
                 );
 
 
-                if (submitButton) {
+                /*
+                Reset form
+                */
 
-                    submitButton.textContent =
-                        "Preparing Photo...";
+                form.reset();
+
+
+                /*
+                Hide photo preview
+                */
+
+                if (preview) {
+
+                    preview.style.display =
+                        "none";
+
+                    preview.removeAttribute(
+                        "src"
+                    );
 
                 }
 
 
-                const photoBase64 =
-                    await fileToBase64(
-                        selectedFile
-                    );
+                /*
+                Generate new timestamp
+                */
+
+                updateTimestamp();
 
 
                 /*
-                ------------------------------------------------
-                Send the exact field names expected by Code.gs
-                ------------------------------------------------
+                Optional success log
                 */
 
-                payload.append(
-                    "photoBase64",
-                    photoBase64
-                );
-
-
-                payload.append(
-                    "photoName",
-                    selectedFile.name ||
-                    "beneficiary_photo.jpg"
-                );
-
-
-                payload.append(
-                    "photoType",
-                    selectedFile.type ||
-                    "image/jpeg"
-                );
-
-
                 console.log(
-                    "Photo prepared successfully.",
-                    {
-                        name:
-                            selectedFile.name,
-
-                        type:
-                            selectedFile.type,
-
-                        size:
-                            selectedFile.size
-                    }
+                    "Visit submitted successfully."
                 );
 
             }
@@ -781,468 +574,150 @@ if (form) {
             else {
 
                 /*
-                ------------------------------------------------
-                No photo selected.
-                Send empty photo fields explicitly.
-                ------------------------------------------------
+                Apps Script responded,
+                but reported an application error.
                 */
 
-                payload.append(
-                    "photoBase64",
-                    ""
+                const serverMessage =
+                    result &&
+                    result.error
+                        ? result.error
+                        : "The server rejected the submission.";
+
+                throw new Error(
+                    serverMessage
                 );
 
+            }
 
-                payload.append(
-                    "photoName",
-                    ""
+
+        }
+
+        catch (error) {
+
+
+            /*
+            Clear timeout
+            */
+
+            clearTimeout(timeout);
+
+
+            /*
+            Handle timeout
+            */
+
+            if (
+                error.name ===
+                "AbortError"
+            ) {
+
+                showStatus(
+                    "The submission timed out. Please check your connection and try again.",
+                    "error"
                 );
 
+            }
 
-                payload.append(
-                    "photoType",
-                    ""
+            /*
+            Handle network error
+            */
+
+            else if (
+                error instanceof TypeError
+            ) {
+
+                showStatus(
+                    "Unable to connect to the server. Please check your internet connection.",
+                    "error"
                 );
 
+            }
 
-                console.log(
-                    "No photo was selected."
+            /*
+            Handle all other errors
+            */
+
+            else {
+
+                showStatus(
+                    "Submission failed: " +
+                    error.message,
+                    "error"
                 );
 
             }
 
 
             /*
-            =================================================
-            TIMEOUT CONTROLLER
-            =================================================
+            Log technical details
             */
 
-            const controller =
-                new AbortController();
+            console.error(
+                "Submission error:",
+                error
+            );
 
+        }
 
-            const timeout =
-                setTimeout(
-                    function () {
 
-                        controller.abort();
+        finally {
 
-                    },
-                    60000
-                );
 
+            /*
+            Always restore button
+            */
 
-            try {
+            if (submitButton) {
 
-                /*
-                =================================================
-                SEND REQUEST
-                =================================================
-                */
+                submitButton.disabled =
+                    false;
 
-                showStatus(
-                    "Submitting visit record...",
-                    "info"
-                );
+                submitButton.textContent =
+                    "Submit Visit";
 
-
-                if (submitButton) {
-
-                    submitButton.textContent =
-                        "Submitting...";
-
-                }
-
-
-                const response =
-                    await fetch(
-                        SCRIPT_URL,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/x-www-form-urlencoded;charset=UTF-8"
-                            },
-
-                            body:
-                                payload.toString(),
-
-                            signal:
-                                controller.signal
-                        }
-                    );
-
-
-                /*
-                -------------------------------------------------
-                Clear timeout
-                -------------------------------------------------
-                */
-
-                clearTimeout(
-                    timeout
-                );
-
-
-                /*
-                -------------------------------------------------
-                HTTP status
-                -------------------------------------------------
-                */
-
-                if (
-                    !response.ok
-                ) {
-
-                    throw new Error(
-                        "Server returned HTTP " +
-                        response.status
-                    );
-
-                }
-
-
-                /*
-                -------------------------------------------------
-                Read server response
-                -------------------------------------------------
-                */
-
-                const responseText =
-                    await response.text();
-
-
-                console.log(
-                    "Apps Script response:",
-                    responseText
-                );
-
-
-                /*
-                -------------------------------------------------
-                Parse JSON
-                -------------------------------------------------
-                */
-
-                let result;
-
-
-                try {
-
-                    result =
-                        JSON.parse(
-                            responseText
-                        );
-
-                }
-
-                catch (jsonError) {
-
-                    console.error(
-                        "Raw server response:",
-                        responseText
-                    );
-
-
-                    throw new Error(
-                        "Invalid response received from server."
-                    );
-
-                }
-
-
-                /*
-                =================================================
-                SUCCESS
-                =================================================
-                */
-
-                if (
-                    result &&
-                    result.success === true
-                ) {
-
-                    /*
-                    ------------------------------------------------
-                    Show success
-                    ------------------------------------------------
-                    */
-
-                    if (
-                        result.photoUploaded === true
-                    ) {
-
-                        showStatus(
-                            "Visit submitted successfully. Photo uploaded.",
-                            "success"
-                        );
-
-                    }
-
-                    else {
-
-                        showStatus(
-                            "Visit submitted successfully.",
-                            "success"
-                        );
-
-                    }
-
-
-                    /*
-                    ------------------------------------------------
-                    Log important server information
-                    ------------------------------------------------
-                    */
-
-                    console.log(
-                        "Request ID:",
-                        result.requestId
-                    );
-
-
-                    console.log(
-                        "Photo URL:",
-                        result.photoUrl
-                    );
-
-
-                    console.log(
-                        "Photo uploaded:",
-                        result.photoUploaded
-                    );
-
-
-                    /*
-                    ------------------------------------------------
-                    Reset form
-                    ------------------------------------------------
-                    */
-
-                    form.reset();
-
-
-                    /*
-                    ------------------------------------------------
-                    Hide preview
-                    ------------------------------------------------
-                    */
-
-                    if (preview) {
-
-                        preview.style.display =
-                            "none";
-
-                        preview.removeAttribute(
-                            "src"
-                        );
-
-                    }
-
-
-                    /*
-                    ------------------------------------------------
-                    Generate fresh timestamp
-                    ------------------------------------------------
-                    */
-
-                    updateTimestamp();
-
-                }
-
-                /*
-                =================================================
-                DUPLICATE
-                =================================================
-                */
-
-                else if (
-                    result &&
-                    result.duplicate === true
-                ) {
-
-                    showStatus(
-                        result.message ||
-                        "This visit appears to have already been submitted.",
-                        "warning"
-                    );
-
-
-                    console.warn(
-                        "Duplicate submission:",
-                        result.requestId
-                    );
-
-                }
-
-                /*
-                =================================================
-                SERVER ERROR
-                =================================================
-                */
-
-                else {
-
-                    const serverMessage =
-                        result &&
-                        result.error
-                            ? result.error
-                            : "The server rejected the submission.";
-
-
-                    throw new Error(
-                        serverMessage
-                    );
-
-                }
-
-
-            }
-
-            catch (error) {
-
-                /*
-                ------------------------------------------------
-                Clear timeout
-                ------------------------------------------------
-                */
-
-                clearTimeout(
-                    timeout
-                );
-
-
-                /*
-                ------------------------------------------------
-                Timeout
-                ------------------------------------------------
-                */
-
-                if (
-                    error.name ===
-                    "AbortError"
-                ) {
-
-                    showStatus(
-                        "The submission timed out. Please check your connection and try again.",
-                        "error"
-                    );
-
-                }
-
-                /*
-                ------------------------------------------------
-                Network error
-                ------------------------------------------------
-                */
-
-                else if (
-                    error instanceof TypeError
-                ) {
-
-                    showStatus(
-                        "Unable to connect to the server. Please check your internet connection.",
-                        "error"
-                    );
-
-                }
-
-                /*
-                ------------------------------------------------
-                Other errors
-                ------------------------------------------------
-                */
-
-                else {
-
-                    showStatus(
-                        "Submission failed: " +
-                        error.message,
-                        "error"
-                    );
-
-                }
-
-
-                /*
-                ------------------------------------------------
-                Technical log
-                ------------------------------------------------
-                */
-
-                console.error(
-                    "Submission error:",
-                    error
-                );
-
-            }
-
-
-            finally {
-
-                /*
-                ------------------------------------------------
-                Always restore submit button
-                ------------------------------------------------
-                */
-
-                if (submitButton) {
-
-                    submitButton.disabled =
-                        false;
-
-                    submitButton.textContent =
-                        "Submit Visit";
-
-                    submitButton.style.opacity =
-                        "1";
-
-                }
+                submitButton.style.opacity =
+                    "1";
 
             }
 
         }
+
+    }
+);
+
+}
+
+/*
+
+GLOBAL JAVASCRIPT ERROR HANDLER
+
+*/
+
+window.addEventListener("error",function (event) {
+
+    console.error(
+        "Unexpected JavaScript error:",
+        event.error
     );
 
 }
 
-
-/*
-====================================================
-GLOBAL JAVASCRIPT ERROR HANDLER
-====================================================
-*/
-
-window.addEventListener(
-    "error",
-    function (event) {
-
-        console.error(
-            "Unexpected JavaScript error:",
-            event.error
-        );
-
-    }
 );
 
-
 /*
-====================================================
+
 UNHANDLED PROMISE ERROR HANDLER
-====================================================
+
 */
 
-window.addEventListener(
-    "unhandledrejection",
-    function (event) {
+window.addEventListener("unhandledrejection",function (event) {
 
-        console.error(
-            "Unhandled Promise rejection:",
-            event.reason
-        );
+    console.error(
+        "Unhandled Promise rejection:",
+        event.reason
+    );
 
-    }
+}
+
 );
-```
