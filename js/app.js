@@ -21,9 +21,9 @@ CONFIGURATION
 ====================================================
 */
 
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
+//const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuU38Cwyld6INmQC_jlpnias-G2XkLYz_-_MLwDPAigFob4r3ylvcflQLZQTiEuHk/exec";
 
+const SCRIPT_url = "https://script.google.com/macros/s/AKfycbwNtvGU1b5_odSFY84fx9ogzz4cLh_l77_Ha_XbAt7YkZS9prdUk1yReFZChCt0_Pcb/exec";
 
 /*
 ====================================================
